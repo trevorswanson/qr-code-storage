@@ -70,5 +70,5 @@ def get_qr(name):
 
 if __name__ == '__main__':
     os.makedirs(QR_OUTPUT_DIR, exist_ok=True)
-    app.run(host='0.0.0.0', port=5050, debug=True)
+    app.run(host='0.0.0.0', port=5050)
 
