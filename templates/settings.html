@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
 </head>
 <body class="bg-gray-100 p-6">
     <div class="max-w-xl mx-auto">
         <div class="flex justify-between items-center mb-4">
             <h1 class="text-2xl font-bold">Settings</h1>
-            <a href="{{ url_for('index') }}" class="text-blue-600 underline" title="Home">🏠</a>
+            <a href="{{ url_for('index') }}" class="text-blue-600 underline" title="Home"><i data-feather="home"></i></a>
         </div>
 
         <h2 class="text-xl font-semibold mb-2">Categories</h2>
@@ -55,5 +56,6 @@
             {% endfor %}
         </ul>
     </div>
+    <script>feather.replace()</script>
 </body>
 </html>
