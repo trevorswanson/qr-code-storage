@@ -51,15 +51,17 @@ def index():
     data = load_data()
     sort_by = request.args.get('sort', 'room')
     devices = data.get('devices', {})
-    if sort_by == 'category':
-        sorted_devices = dict(
-            sorted(devices.items(), key=lambda item: (item[1].get('category', ''), item[0]))
-        )
-    else:
-        sorted_devices = dict(
-            sorted(devices.items(), key=lambda item: (item[1].get('room', ''), item[0]))
-        )
-    return render_template('index.html', devices=sorted_devices, sort_by=sort_by)
+
+    groups = {}
+    for name, info in devices.items():
+        key_field = 'room' if sort_by == 'room' else 'category'
+        key = info.get(key_field) or 'Unassigned'
+        groups.setdefault(key, []).append({'name': name, **info})
+
+    # sort groups and devices alphabetically
+    sorted_groups = {k: sorted(v, key=lambda d: d['name']) for k, v in sorted(groups.items())}
+
+    return render_template('index.html', groups=sorted_groups, sort_by=sort_by)
 
 @app.route('/add', methods=['GET', 'POST'])
 def add_device():
