@@ -46,23 +46,34 @@ def regenerate_qr(name, data_string):
     qr = qrcode.make(data_string)
     qr.save(output_path)
     return output_path
-
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
+    data = load_data()
+    sort_by = request.args.get('sort', 'room')
+    devices = data.get('devices', {})
+    if sort_by == 'category':
+        sorted_devices = dict(
+            sorted(devices.items(), key=lambda item: (item[1].get('category', ''), item[0]))
+        )
+    else:
+        sorted_devices = dict(
+            sorted(devices.items(), key=lambda item: (item[1].get('room', ''), item[0]))
+        )
+    return render_template('index.html', devices=sorted_devices, sort_by=sort_by)
+
+@app.route('/add', methods=['GET', 'POST'])
+def add_device():
     data = load_data()
     if request.method == 'POST':
         file = request.files.get('file')
         name = request.form.get('name')
         category = request.form.get('category', '')
         room = request.form.get('room', '')
-
         if not file or not name:
-            flash("Device name and image file are required.", "error")
-            return redirect(url_for('index'))
-
-        image_path = os.path.join("temp_upload.png")
+            flash('Device name and image file are required.', 'error')
+            return redirect(url_for('add_device'))
+        image_path = os.path.join('temp_upload.png')
         file.save(image_path)
-
         try:
             qr_string = scan_qr_from_image(image_path)
             data['devices'][name] = {
@@ -72,20 +83,15 @@ def index():
             }
             save_data(data)
             regenerate_qr(name, qr_string)
-            flash(f"Stored and generated QR for '{name}'", "success")
+            flash(f"Stored and generated QR for '{name}'", 'success')
         except Exception as e:
-            flash(str(e), "error")
+            flash(str(e), 'error')
         finally:
             if os.path.exists(image_path):
                 os.remove(image_path)
         return redirect(url_for('index'))
+    return render_template('add_device.html', categories=data.get('categories', []), rooms=data.get('rooms', []))
 
-    return render_template(
-        "index.html",
-        devices=data.get('devices', {}),
-        categories=data.get('categories', []),
-        rooms=data.get('rooms', []),
-    )
 
 @app.route('/qr/<name>')
 def get_qr(name):
