@@ -163,8 +163,11 @@ def edit_device(name):
         if new_name != name:
             data['devices'][new_name] = device
             del data['devices'][name]
-            old_path = os.path.join(QR_OUTPUT_DIR, f"{name}.png")
-            new_path = os.path.join(QR_OUTPUT_DIR, f"{new_name}.png")
+            old_path = os.path.normpath(os.path.join(QR_OUTPUT_DIR, f"{name}.png"))
+            new_path = os.path.normpath(os.path.join(QR_OUTPUT_DIR, f"{new_name}.png"))
+            if not old_path.startswith(QR_OUTPUT_DIR) or not new_path.startswith(QR_OUTPUT_DIR):
+                flash('Invalid file path.', 'error')
+                return redirect(url_for('edit_device', name=name))
             if os.path.exists(old_path):
                 os.rename(old_path, new_path)
             name = new_name
