@@ -3,37 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <title>Smart Home QR Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Smart Home QR Code Manager</h1>
+<body class="bg-gray-100 p-6">
+    <h1 class="text-2xl font-bold mb-4">Smart Home QR Code Manager</h1>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-            <ul>
+            <ul class="mb-4">
             {% for category, message in messages %}
-                <li><strong>{{ category.title() }}:</strong> {{ message }}</li>
+                <li class="text-{{ 'red' if category == 'error' else 'green' }}-600">
+                    <strong>{{ category.title() }}:</strong> {{ message }}
+                </li>
             {% endfor %}
             </ul>
         {% endif %}
     {% endwith %}
 
-    <h2>Upload QR Code</h2>
-    <form method="POST" enctype="multipart/form-data">
-        <label>Device Name:</label><br>
-        <input type="text" name="name"><br><br>
-        <label>QR Image (camera or file):</label><br>
-	<input type="file" name="file" accept="image/*" capture="environment">
-        <button type="submit">Upload</button>
+    <h2 class="text-xl font-semibold mb-2">Upload QR Code</h2>
+    <form method="POST" enctype="multipart/form-data" class="bg-white p-4 rounded shadow mb-6">
+        <label class="block mb-2">Device Name:</label>
+        <input type="text" name="name" class="border p-2 w-full mb-4">
+        <label class="block mb-2">QR Image (camera or file):</label>
+        <input type="file" name="file" accept="image/*" capture="environment" class="mb-4">
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Upload</button>
     </form>
 
-    <h2>Stored Devices</h2>
+    <h2 class="text-xl font-semibold mb-2">Stored Devices</h2>
     <ul>
     {% for name in devices %}
-        <li>{{ name }} — <a href="{{ url_for('get_qr', name=name) }}" target="_blank">View QR</a></li>
+        <li class="mb-4">
+            <span class="font-medium">{{ name }}</span>
+            <button class="text-blue-600 underline ml-2" onclick="toggleQr('{{ name }}')">View QR</button>
+            <img id="{{ name }}-qr" src="{{ url_for('get_qr', name=name) }}" alt="QR for {{ name }}" class="mt-2 hidden w-40 h-40">
+        </li>
     {% else %}
         <li>No devices saved yet.</li>
     {% endfor %}
     </ul>
+
+    <script>
+        function toggleQr(name) {
+            const img = document.getElementById(`${name}-qr`);
+            if (img) {
+                img.classList.toggle('hidden');
+            }
+        }
+    </script>
 </body>
 </html>
 
