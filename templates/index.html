@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Smart Home QR Manager</title>
+</head>
+<body>
+    <h1>Smart Home QR Code Manager</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+            {% for category, message in messages %}
+                <li><strong>{{ category.title() }}:</strong> {{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <h2>Upload QR Code</h2>
+    <form method="POST" enctype="multipart/form-data">
+        <label>Device Name:</label><br>
+        <input type="text" name="name"><br><br>
+        <label>QR Image (camera or file):</label><br>
+	<input type="file" name="file" accept="image/*" capture="environment">
+        <button type="submit">Upload</button>
+    </form>
+
+    <h2>Stored Devices</h2>
+    <ul>
+    {% for name in devices %}
+        <li>{{ name }} — <a href="{{ url_for('get_qr', name=name) }}" target="_blank">View QR</a></li>
+    {% else %}
+        <li>No devices saved yet.</li>
+    {% endfor %}
+    </ul>
+</body>
+</html>
+
