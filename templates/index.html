@@ -8,7 +8,10 @@
 </head>
 <body class="bg-gray-100 p-6">
     <div class="max-w-xl mx-auto">
-    <h1 class="text-2xl font-bold mb-4">Smart Home QR Code Manager</h1>
+    <div class="flex justify-between items-center mb-4">
+        <h1 class="text-2xl font-bold">Smart Home QR Code Manager</h1>
+        <a href="{{ url_for('settings') }}" class="text-blue-600 underline">Settings</a>
+    </div>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -26,6 +29,20 @@
     <form method="POST" enctype="multipart/form-data" class="bg-white p-4 rounded shadow mb-6">
         <label class="block mb-2">Device Name:</label>
         <input type="text" name="name" class="border p-2 w-full mb-4">
+        <label class="block mb-2">Category:</label>
+        <select name="category" class="border p-2 w-full mb-4">
+            <option value="">-- None --</option>
+            {% for cat in categories %}
+            <option value="{{ cat }}">{{ cat }}</option>
+            {% endfor %}
+        </select>
+        <label class="block mb-2">Room:</label>
+        <select name="room" class="border p-2 w-full mb-4">
+            <option value="">-- None --</option>
+            {% for r in rooms %}
+            <option value="{{ r }}">{{ r }}</option>
+            {% endfor %}
+        </select>
         <label class="block mb-2">QR Image (camera or file):</label>
         <input type="file" name="file" accept="image/*" capture="environment" class="mb-4">
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Upload</button>
@@ -33,10 +50,15 @@
 
     <h2 class="text-xl font-semibold mb-2">Stored Devices</h2>
     <ul>
-    {% for name in devices %}
+    {% for name, info in devices.items() %}
         <li class="mb-4">
-            <span class="font-medium">{{ name }}</span>
-            <button class="text-blue-600 underline ml-2" onclick="toggleQr('{{ name }}')">View QR</button>
+            <div>
+                <span class="font-medium">{{ name }}</span>
+                {% if info.category %}<span class="text-sm text-gray-600 ml-2">({{ info.category }})</span>{% endif %}
+                {% if info.room %}<span class="text-sm text-gray-600 ml-2">- {{ info.room }}</span>{% endif %}
+                <a href="{{ url_for('edit_device', name=name) }}" class="text-blue-600 underline ml-2">Edit</a>
+                <button class="text-blue-600 underline ml-2" onclick="toggleQr('{{ name }}')">View QR</button>
+            </div>
             <img id="{{ name }}-qr" src="{{ url_for('get_qr', name=name) }}" alt="QR for {{ name }}" class="mt-2 hidden w-40 h-40">
         </li>
     {% else %}

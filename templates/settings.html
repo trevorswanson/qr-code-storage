@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-xl mx-auto">
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-2xl font-bold">Settings</h1>
+            <a href="{{ url_for('index') }}" class="text-blue-600 underline">Home</a>
+        </div>
+
+        <h2 class="text-xl font-semibold mb-2">Categories</h2>
+        <form method="POST" class="mb-4">
+            <input type="hidden" name="action" value="add_category">
+            <input type="text" name="value" class="border p-2 mr-2" placeholder="New category">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Add</button>
+        </form>
+        <ul class="mb-6">
+            {% for cat in categories %}
+            <li class="mb-2 flex justify-between">
+                <span>{{ cat }}</span>
+                <form method="POST" class="ml-2">
+                    <input type="hidden" name="action" value="delete_category">
+                    <input type="hidden" name="value" value="{{ cat }}">
+                    <button type="submit" class="text-red-600">Delete</button>
+                </form>
+            </li>
+            {% else %}
+            <li>No categories defined.</li>
+            {% endfor %}
+        </ul>
+
+        <h2 class="text-xl font-semibold mb-2">Rooms</h2>
+        <form method="POST" class="mb-4">
+            <input type="hidden" name="action" value="add_room">
+            <input type="text" name="value" class="border p-2 mr-2" placeholder="New room">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Add</button>
+        </form>
+        <ul>
+            {% for room in rooms %}
+            <li class="mb-2 flex justify-between">
+                <span>{{ room }}</span>
+                <form method="POST" class="ml-2">
+                    <input type="hidden" name="action" value="delete_room">
+                    <input type="hidden" name="value" value="{{ room }}">
+                    <button type="submit" class="text-red-600">Delete</button>
+                </form>
+            </li>
+            {% else %}
+            <li>No rooms defined.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
