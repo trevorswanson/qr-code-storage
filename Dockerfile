@@ -1,10 +1,15 @@
-FROM python:3.13-slim
+FROM python:3.13
 
 # Set working directory
 WORKDIR /app
 
 # Install build dependencies for opencv
-RUN apk add --no-cache build-base
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
+        cmake \
+        libgl1 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
 COPY requirements.txt ./
