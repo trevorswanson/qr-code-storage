@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  app:
+    image: ghcr.io/trevorswanson/qr-code-storage:latest
+    ports:
+      - '5050:5050'
+    volumes:
+      - ./data/qr_data_store.json:/app/qr_data_store.json

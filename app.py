@@ -1,13 +1,11 @@
 import os
 import json
 import cv2
-import qrcode
-from flask import Flask, request, render_template, redirect, url_for, send_from_directory, flash
+from flask import Flask, request, render_template, redirect, url_for, flash
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
 DATA_FILE = "qr_data_store.json"
-QR_OUTPUT_DIR = "static"
 
 def load_data():
     """Load data from the JSON store and upgrade legacy formats."""
@@ -41,11 +39,6 @@ def scan_qr_from_image(image_path):
     else:
         raise ValueError("No QR code found in image.")
 
-def regenerate_qr(name, data_string):
-    output_path = os.path.join(QR_OUTPUT_DIR, f"{name}.png")
-    qr = qrcode.make(data_string)
-    qr.save(output_path)
-    return output_path
 @app.route('/')
 def index():
     data = load_data()
@@ -84,8 +77,7 @@ def add_device():
                 'room': room,
             }
             save_data(data)
-            regenerate_qr(name, qr_string)
-            flash(f"Stored and generated QR for '{name}'", 'success')
+            flash(f"Stored QR for '{name}'", 'success')
         except Exception as e:
             flash(str(e), 'error')
         finally:
@@ -93,11 +85,6 @@ def add_device():
                 os.remove(image_path)
         return redirect(url_for('index'))
     return render_template('add_device.html', categories=data.get('categories', []), rooms=data.get('rooms', []))
-
-
-@app.route('/qr/<name>')
-def get_qr(name):
-    return send_from_directory(QR_OUTPUT_DIR, f"{name}.png")
 
 
 @app.route('/settings', methods=['GET', 'POST'])
@@ -163,13 +150,6 @@ def edit_device(name):
         if new_name != name:
             data['devices'][new_name] = device
             del data['devices'][name]
-            old_path = os.path.normpath(os.path.join(QR_OUTPUT_DIR, f"{name}.png"))
-            new_path = os.path.normpath(os.path.join(QR_OUTPUT_DIR, f"{new_name}.png"))
-            if not old_path.startswith(QR_OUTPUT_DIR) or not new_path.startswith(QR_OUTPUT_DIR):
-                flash('Invalid file path.', 'error')
-                return redirect(url_for('edit_device', name=name))
-            if os.path.exists(old_path):
-                os.rename(old_path, new_path)
             name = new_name
             device = data['devices'][new_name]
 
@@ -189,6 +169,5 @@ def edit_device(name):
     )
 
 if __name__ == '__main__':
-    os.makedirs(QR_OUTPUT_DIR, exist_ok=True)
     app.run(host='0.0.0.0', port=5050)
 
