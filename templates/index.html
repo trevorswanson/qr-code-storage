@@ -35,7 +35,7 @@
     <h2 class="text-xl font-semibold mb-2">Stored Devices</h2>
     <form method="get" class="mb-4">
         <label class="mr-2">Sort by:</label>
-        <select name="sort" onchange="this.form.submit()" class="border p-1">
+        <select name="sort" onchange="this.form.submit()" class="border p-1 bg-white dark:bg-gray-700 dark:text-gray-100">
             <option value="room" {% if sort_by == 'room' %}selected{% endif %}>Room</option>
             <option value="category" {% if sort_by == 'category' %}selected{% endif %}>Category</option>
         </select>

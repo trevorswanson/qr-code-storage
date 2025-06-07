@@ -31,10 +31,10 @@
 
         <form method="POST" class="bg-white dark:bg-gray-800 p-4 rounded shadow">
             <label class="block mb-2">Device Name:</label>
-            <input type="text" name="name" value="{{ name }}" class="border p-2 w-full mb-4">
+            <input type="text" name="name" value="{{ name }}" class="border p-2 w-full mb-4 bg-white dark:bg-gray-700 dark:text-gray-100">
 
             <label class="block mb-2">Category:</label>
-            <select name="category" class="border p-2 w-full mb-4">
+            <select name="category" class="border p-2 w-full mb-4 bg-white dark:bg-gray-700 dark:text-gray-100">
                 <option value="">-- None --</option>
                 {% for cat in categories %}
                 <option value="{{ cat }}" {% if device.category == cat %}selected{% endif %}>{{ cat }}</option>
@@ -42,7 +42,7 @@
             </select>
 
             <label class="block mb-2">Room:</label>
-            <select name="room" class="border p-2 w-full mb-4">
+            <select name="room" class="border p-2 w-full mb-4 bg-white dark:bg-gray-700 dark:text-gray-100">
                 <option value="">-- None --</option>
                 {% for r in rooms %}
                 <option value="{{ r }}" {% if device.room == r %}selected{% endif %}>{{ r }}</option>
