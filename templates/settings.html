@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings</title>
+    <script>
+        tailwind.config = { darkMode: 'media' }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/feather-icons"></script>
 </head>
-<body class="bg-gray-100 p-6">
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-6">
     <div class="max-w-xl mx-auto">
         <div class="flex justify-between items-center mb-4">
             <h1 class="text-2xl font-bold">Settings</h1>
@@ -17,7 +20,7 @@
         <h2 class="text-xl font-semibold mb-2">Categories</h2>
         <form method="POST" class="mb-4">
             <input type="hidden" name="action" value="add_category">
-            <input type="text" name="value" class="border p-2 mr-2" placeholder="New category">
+            <input type="text" name="value" class="border p-2 mr-2 bg-white dark:bg-gray-700 dark:text-gray-100" placeholder="New category">
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Add</button>
         </form>
         <ul class="mb-6">
@@ -38,7 +41,7 @@
         <h2 class="text-xl font-semibold mb-2">Rooms</h2>
         <form method="POST" class="mb-4">
             <input type="hidden" name="action" value="add_room">
-            <input type="text" name="value" class="border p-2 mr-2" placeholder="New room">
+            <input type="text" name="value" class="border p-2 mr-2 bg-white dark:bg-gray-700 dark:text-gray-100" placeholder="New room">
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Add</button>
         </form>
         <ul>
